@@ -51,12 +51,15 @@ def wait_for_message(
 
     if guards_ready:
         if sigint_gc.handle.pointer in guards_ready:
+            node.destroy_subscription(sub)
             return (False, None)
 
     if subs_ready:
         if sub.handle.pointer in subs_ready:
             msg_info = sub.handle.take_message(sub.msg_type, sub.raw)
             if msg_info is not None:
+                node.destroy_subscription(sub)
                 return (True, msg_info[0])
 
+    node.destroy_subscription(sub)
     return (False, None)
